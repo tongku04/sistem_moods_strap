@@ -1,6 +1,3 @@
-HALOOOO
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -172,7 +169,7 @@ HALOOOO
                     <i class="fas fa-shopping-cart"></i>
                     <span class="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
                 </button>
-                <a href="/Berak/auth/login.php" class="p-2 text-gray-700 hover:text-pink-500 transition group">
+                <a href="SISTEM_MOODS_STRAP/auth/login.php" class="p-2 text-gray-700 hover:text-pink-500 transition group">
                     <i class="fas fa-user"></i>
                 </a>
                 <button id="mobile-menu-button" class="md:hidden p-2 text-gray-700 hover:text-pink-500 transition">
@@ -246,41 +243,41 @@ HALOOOO
                 </div>
             </div>
             
-<!-- Slide 2 -->
-<div class="w-full flex-shrink-0 relative">
-    <div class="bg-gradient-to-r from-purple-500 to-pink-500 py-20 md:py-28 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-20 right-10 w-24 h-24 bg-white rounded-full floating" style="animation-delay: 1s;"></div>
-            <div class="absolute bottom-10 left-20 w-18 h-18 bg-white rounded-full floating" style="animation-delay: 3s;"></div>
-        </div>
-        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
-            <div class="md:w-1/2 mb-8 md:mb-0">
-                <h2 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                    Koleksi <span class="text-green-300">Terbaru</span>
-                </h2>
-                <p class="text-white/90 text-lg mb-8 max-w-md">Dapatkan gantungan HP dengan desain kekinian dan bahan premium untuk melengkapi gaya Anda. Limited edition hanya untuk Anda!</p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <!-- TOMBOL LIhat Koleksi YANG BISA DITEKAN -->
-                    <button onclick="window.location.href='koleksi.php';" class="px-8 py-4 bg-white text-purple-500 font-bold rounded-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-lg">
-                        <i class="fas fa-star mr-2"></i>Lihat Koleksi
-                    </button>
-                    
-                    <!-- TOMBOL Wishlist YANG BISA DITEKAN -->
-                    <button onclick="window.location.href='wishlist.php';" class="px-8 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition transform hover:scale-105">
-                        <i class="fas fa-heart mr-2"></i>Wishlist
-                    </button>
+            <!-- Slide 2 -->
+            <div class="w-full flex-shrink-0 relative">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 py-20 md:py-28 relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute top-20 right-10 w-24 h-24 bg-white rounded-full floating" style="animation-delay: 1s;"></div>
+                        <div class="absolute bottom-10 left-20 w-18 h-18 bg-white rounded-full floating" style="animation-delay: 3s;"></div>
+                    </div>
+                    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
+                        <div class="md:w-1/2 mb-8 md:mb-0">
+                            <h2 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                                Koleksi <span class="text-green-300">Terbaru</span>
+                            </h2>
+                            <p class="text-white/90 text-lg mb-8 max-w-md">Dapatkan gantungan HP dengan desain kekinian dan bahan premium untuk melengkapi gaya Anda. Limited edition hanya untuk Anda!</p>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <!-- TOMBOL LIhat Koleksi YANG BISA DITEKAN -->
+                                <button onclick="window.location.href='koleksi.php';" class="px-8 py-4 bg-white text-purple-500 font-bold rounded-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-lg">
+                                    <i class="fas fa-star mr-2"></i>Lihat Koleksi
+                                </button>
+                                
+                                <!-- TOMBOL Wishlist YANG BISA DITEKAN -->
+                                <button onclick="window.location.href='produk.php';" class="px-8 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition transform hover:scale-105">
+                                    <i class="fas fa-heart mr-2"></i>Wishlist
+                                </button>
+                            </div>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <div class="relative">
+                                <img src="https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981834_1280.png" alt="Gantungan HP" class="w-full max-w-lg floating" style="animation-delay: 1s;">
+                                <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-green-400 rounded-2xl rotate-12 opacity-80"></div>
+                                <div class="absolute -top-4 -left-4 w-20 h-20 bg-white rounded-2xl -rotate-12 opacity-80"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="md:w-1/2 flex justify-center">
-                <div class="relative">
-                    <img src="https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981834_1280.png" alt="Gantungan HP" class="w-full max-w-lg floating" style="animation-delay: 1s;">
-                    <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-green-400 rounded-2xl rotate-12 opacity-80"></div>
-                    <div class="absolute -top-4 -left-4 w-20 h-20 bg-white rounded-2xl -rotate-12 opacity-80"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
             
             <!-- Slide 3 -->
             <div class="w-full flex-shrink-0 relative">
@@ -299,9 +296,9 @@ HALOOOO
                                 <!-- TOMBOL Dapatkan diskon 30% YANG BISA DITEKAN -->
                                 <button onclick="window.location.href='produk.php';" class="px-8 py-4 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition transform hover:scale-105 shadow-lg pulse">
                                     <i class="fas fa-tag mr-2"></i>Dapatkan 30% OFF
-                                 <!-- TOMBOL Lihat Promo YANG BISA DITEKAN -->   
                                 </button>
-                               <button onclick="window.location.href='produk.php';" class="px-8 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition transform hover:scale-105">
+                                <!-- TOMBOL Lihat Promo YANG BISA DITEKAN -->   
+                                <button onclick="window.location.href='produk.php';" class="px-8 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition transform hover:scale-105">
                                     <i class="fas fa-gift mr-2"></i>Lihat Promo
                                 </button>
                             </div>
@@ -370,7 +367,7 @@ HALOOOO
         </div>
     </section>
 
-        <!-- Featured Products -->
+    <!-- Featured Products -->
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
@@ -470,49 +467,41 @@ HALOOOO
     </section>
 
     <!-- Promo Section -->
-<section class="py-16 bg-gradient-to-r from-pink-50 to-purple-50 relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-72 h-72 bg-pink-200 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-50"></div>
-    <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-200 rounded-full translate-x-1/2 translate-y-1/2 opacity-50"></div>
-    
-    <div class="container mx-auto px-4 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center justify-between">
-            <div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Dapatkan <span class="gradient-text">Diskon 30%</span> untuk Pembelian Pertama</h2>
-                <p class="text-gray-600 text-lg mb-6 max-w-xl">Bergabunglah dengan komunitas Moods Strap dan nikmati penawaran spesial untuk pembelian pertama Anda. Jangan lewatkan kesempatan ini!</p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <!-- Tombol Daftar Sekarang -->
-                    <button onclick="window.location.href='auth/Register.php';" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex items-center justify-center">
-                        <i class="fas fa-gift mr-3"></i>Daftar Sekarang
-                    </button>
-                    
-                    <!-- Tombol Pelajari Selengkapnya -->
-                    <button onclick="window.location.href='produk.php';" class="px-8 py-4 border-2 border-pink-500 text-pink-500 font-bold rounded-2xl hover:bg-pink-50 transition transform hover:scale-105">
-                        Pelajari Selengkapnya
-                    </button>
+    <section class="py-16 bg-gradient-to-r from-pink-50 to-purple-50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-72 h-72 bg-pink-200 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-50"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-200 rounded-full translate-x-1/2 translate-y-1/2 opacity-50"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center justify-between">
+                <div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-4">Dapatkan <span class="gradient-text">Diskon 30%</span> untuk Pembelian Pertama</h2>
+                    <p class="text-gray-600 text-lg mb-6 max-w-xl">Bergabunglah dengan komunitas Moods Strap dan nikmati penawaran spesial untuk pembelian pertama Anda. Jangan lewatkan kesempatan ini!</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <!-- Tombol Daftar Sekarang -->
+                        <button onclick="window.location.href='SISTEM_MOODS_STRAP/auth/Register.php';" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex items-center justify-center">
+                            <i class="fas fa-gift mr-3"></i>Daftar Sekarang
+                        </button>
+                        
+                        <!-- Tombol Pelajari Selengkapnya -->
+                        <button onclick="window.location.href='produk.php';" class="px-8 py-4 border-2 border-pink-500 text-pink-500 font-bold rounded-2xl hover:bg-pink-50 transition transform hover:scale-105">
+                            Pelajari Selengkapnya
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="lg:w-1/2 flex justify-center">
-                <div class="relative">
-                    <div class="w-80 h-80 gradient-bg rounded-full flex items-center justify-center shadow-2xl pulse">
-                        <div class="text-center text-white">
-                            <div class="text-6xl font-bold">30%</div>
-                            <div class="text-xl font-semibold">OFF</div>
-                            <div class="text-sm mt-2 opacity-90">Pembelian Pertama</div>
+                <div class="lg:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="w-80 h-80 gradient-bg rounded-full flex items-center justify-center shadow-2xl pulse">
+                            <div class="text-center text-white">
+                                <div class="text-6xl font-bold">30%</div>
+                                <div class="text-xl font-semibold">OFF</div>
+                                <div class="text-sm mt-2 opacity-90">Pembelian Pertama</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-2xl rotate-12 flex items-center justify-center shadow-lg">
-                        <i class="fas fa-bolt text-white text-xl"></i>
-                    </div>
-                    <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-green-400 rounded-2xl -rotate-12 flex items-center justify-center shadow-lg">
-                        <i class="fas fa-check text-white"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-                </div>
-                
+                        <div class="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-2xl rotate-12 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-bolt text-white text-xl"></i>
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-green-400 rounded-2xl -rotate-12 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-check text-white"></i>
                         </div>
                     </div>
                 </div>
@@ -619,14 +608,14 @@ HALOOOO
                         <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition">
                             <i class="fab fa-instagram"></i>
                         </a>
-                    <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
-                        <i class="fab fa-whatsapp group-hover:text-white"></i>
-                    </a>
+                        <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                            <i class="fab fa-whatsapp group-hover:text-white"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
                 
                 <div>
                     <h4 class="font-bold text-lg mb-6">Tautan Cepat</h4>
@@ -642,11 +631,11 @@ HALOOOO
                 <div>
                     <h4 class="font-bold text-lg mb-6">Bantuan</h4>
                     <ul class="space-y-3">
-                        <li><a href="Cara Belanja" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Cara Belanja</a></li>
-                        <li><a href="Pembayaran" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pembayaran</a></li>
-                        <li><a href="Pengiriman" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pengiriman</a></li>
-                        <li><a href="FAQ" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>FAQ</a></li>
-                        <li><a href="Kebijakan Privasi" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Kebijakan Privasi</a></li>
+                        <li><a href="cara-belanja.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Cara Belanja</a></li>
+                        <li><a href="pembayaran.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pembayaran</a></li>
+                        <li><a href="pengiriman.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pengiriman</a></li>
+                        <li><a href="faq.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>FAQ</a></li>
+                        <li><a href="kebijakan-privasi.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Kebijakan Privasi</a></li>
                     </ul>
                 </div>
                 
@@ -676,7 +665,7 @@ HALOOOO
             <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 Moods Strap. All rights reserved. Made with <i class="fas fa-heart text-pink-500 mx-1"></i> for you</p>
                 <div class="flex items-center space-x-6">
-
+                    <!-- Payment methods can be added here -->
                 </div>
             </div>
         </div>
@@ -768,26 +757,6 @@ HALOOOO
                     mobileMenu.classList.remove('active');
                 }
             });
-            
-           
-            
-            // Initialize counters when section is in view
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        animateCounter(document.getElementById('counter1'), <?php echo $total_produk; ?>);
-                        animateCounter(document.getElementById('counter2'), <?php echo $total_penjualan; ?>);
-                        animateCounter(document.getElementById('counter3'), <?php echo $total_kategori; ?>);
-                        animateCounter(document.getElementById('counter4'), <?php echo $produk_terjual; ?>);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            });
-            
-            const statsSection = document.querySelector('.bg-gradient-to-r');
-            if (statsSection) {
-                observer.observe(statsSection);
-            }
             
             // Initialize
             goToSlide(0);

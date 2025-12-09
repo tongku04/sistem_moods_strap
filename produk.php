@@ -161,7 +161,6 @@
                 <a href="index.php" class="text-2xl font-bold pink-text flex items-center">
                     <div class="flex items-center justify-center mr-2">
                         <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-11 h-11 rounded-full object cover" alt="Logo">
-                        <i class="fas fa-gem text-white text-sm"></i>
                     </div>
                     Moods <span class="text-gray-800">Strap</span>
                 </a>
@@ -184,7 +183,7 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
                 </button>
-                <a href="/Berak/auth/login.php" class="p-2 text-gray-700 hover:text-pink-500 transition group">
+                <a href="SISTEM_MOODS_STRAP/auth/login.php" class="p-2 text-gray-700 hover:text-pink-500 transition group">
                     <i class="fas fa-user"></i>
                 </a>
                 <button id="mobile-menu-button" class="md:hidden p-2 text-gray-700 hover:text-pink-500 transition">
@@ -223,17 +222,11 @@
             <div class="p-4 border-t border-gray-100">
                 <h4 class="font-bold text-gray-800 mb-4">Ikuti Kami</h4>
                 <div class="flex space-x-4">
-                    <a href="https://instagram.com/moodsstrap" target="_blank" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition transform hover:scale-110">
+                    <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition transform hover:scale-110">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="https://tiktok.com/@moodsstrap" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white hover:bg-black transition transform hover:scale-110">
-                        <i class="fab fa-tiktok"></i>
-                    </a>
-                    <a href="https://wa.me/6281234567890" target="_blank" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition transform hover:scale-110">
+                    <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" target="_blank" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition transform hover:scale-110">
                         <i class="fab fa-whatsapp"></i>
-                    </a>
-                    <a href="https://facebook.com/moodsstrap" target="_blank" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition transform hover:scale-110">
-                        <i class="fab fa-facebook-f"></i>
                     </a>
                 </div>
             </div>
@@ -434,103 +427,116 @@
                     </div>
                     
                     <!-- Products -->
-<div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <?php
-    // Query untuk mengambil semua produk aktif
-    $produk_query = "SELECT p.*, k.nama_kategori 
-                    FROM produk p 
-                    LEFT JOIN kategori k ON p.id_kategori = k.id_kategori 
-                    WHERE p.status = 'active' 
-                    ORDER BY p.id_produk DESC";
-    $produk_result = mysqli_query($koneksi, $produk_query);
-    
-    // Cek apakah query berhasil
-    if (!$produk_result) {
-        echo '<div class="col-span-3 text-center py-8">
-                <p class="text-red-500">Error: ' . mysqli_error($koneksi) . '</p>
-              </div>';
-    } else {
-        // Cek apakah ada data
-        if (mysqli_num_rows($produk_result) > 0) {
-            // Tampilkan produk
-            while ($produk = mysqli_fetch_assoc($produk_result)) {
-                $harga = number_format($produk['harga'], 0, ',', '.');
-                $stok = $produk['stok'] > 0 ? "Tersedia" : "Habis";
-                $stok_class = $produk['stok'] > 0 ? "text-green-500" : "text-red-500";
-                $stok_badge = $produk['stok'] > 0 ? "bg-green-500" : "bg-red-500";
-                
-                // PERBAIKAN PATH GAMBAR
-                $foto = $produk['foto'] ? 'uploads/produk/' . $produk['foto'] : 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png';
-                
-                // Cek apakah file gambar ada di server
-                $foto_path = $produk['foto'] ? $_SERVER['DOCUMENT_ROOT'] . '/Berak/uploads/produk/' . $produk['foto'] : '';
-                if ($produk['foto'] && !file_exists($foto_path)) {
-                    $foto = 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png';
-                }
-                
-                $kategori = $produk['nama_kategori'] ?: 'Uncategorized';
-                $rating = rand(40, 50) / 10; // Random rating 4.0 - 5.0
-                
-                echo '
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden transition duration-300 border border-gray-100 fade-in" 
-                     data-id="' . $produk['id_produk'] . '" 
-                     data-kategori="' . $produk['id_kategori'] . '" 
-                     data-harga="' . $produk['harga'] . '" 
-                     data-stok="' . $produk['stok'] . '"
-                     data-rating="' . $rating . '"
-                     data-nama="' . strtolower($produk['nama_produk']) . '">
-                    <div class="relative overflow-hidden">
-                        <div class="p-6 gradient-bg flex items-center justify-center h-56">
-                            <img src="' . $foto . '" alt="' . htmlspecialchars($produk['nama_produk']) . '" 
-                                 class="w-full h-full object-contain transform hover:scale-110 transition duration-500"
-                                 onerror="this.src=\'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png\'">
-                        </div>
-                        <div class="absolute top-4 right-4">
-                            <span class="' . $stok_badge . ' text-white text-xs font-bold px-3 py-1 rounded-full">' . $stok . '</span>
-                        </div>
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-yellow-400 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">
-                                <i class="fas fa-star mr-1"></i>' . $rating . '
-                            </span>
-                        </div>
-                        <div class="absolute bottom-4 left-4">
-                            <span class="bg-white/90 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
-                                ' . htmlspecialchars($kategori) . '
-                            </span>
-                        </div>
+                    <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <?php
+                        // Query untuk mengambil semua produk aktif
+                        $produk_query = "SELECT p.*, k.nama_kategori 
+                                        FROM produk p 
+                                        LEFT JOIN kategori k ON p.id_kategori = k.id_kategori 
+                                        WHERE p.status = 'active' 
+                                        ORDER BY p.id_produk DESC";
+                        $produk_result = mysqli_query($koneksi, $produk_query);
+                        
+                        // Cek apakah query berhasil
+                        if (!$produk_result) {
+                            echo '<div class="col-span-3 text-center py-8">
+                                    <p class="text-red-500">Error: ' . mysqli_error($koneksi) . '</p>
+                                  </div>';
+                        } else {
+                            // Cek apakah ada data
+                            if (mysqli_num_rows($produk_result) > 0) {
+                                // Tampilkan produk
+                                while ($produk = mysqli_fetch_assoc($produk_result)) {
+                                    $harga = number_format($produk['harga'], 0, ',', '.');
+                                    $stok = $produk['stok'] > 0 ? "Tersedia" : "Habis";
+                                    $stok_class = $produk['stok'] > 0 ? "text-green-500" : "text-red-500";
+                                    $stok_badge = $produk['stok'] > 0 ? "bg-green-500" : "bg-red-500";
+                                    
+                                    // PERBAIKAN PATH GAMBAR YANG LEBIH AMAN
+                                    $foto = '';
+                                    if (!empty($produk['foto'])) {
+                                        // Cek apakah file ada di folder uploads/produk
+                                        $local_path = 'SISTEM_MOODS_STRAP/uploads/produk/' . $produk['foto'];
+                                        if (file_exists($local_path)) {
+                                            $foto = $local_path;
+                                        } else {
+                                            // Coba cari di path alternatif
+                                            $alt_path = 'uploads/produk/' . $produk['foto'];
+                                            if (file_exists($alt_path)) {
+                                                $foto = $alt_path;
+                                            } else {
+                                                // Gunakan gambar placeholder jika tidak ditemukan
+                                                $foto = 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png';
+                                            }
+                                        }
+                                    } else {
+                                        // Gunakan gambar placeholder jika tidak ada foto
+                                        $foto = 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png';
+                                    }
+                                    
+                                    $kategori = $produk['nama_kategori'] ?: 'Uncategorized';
+                                    $rating = rand(40, 50) / 10; // Random rating 4.0 - 5.0
+                                    
+                                    echo '
+                                    <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden transition duration-300 border border-gray-100 fade-in" 
+                                         data-id="' . $produk['id_produk'] . '" 
+                                         data-kategori="' . $produk['id_kategori'] . '" 
+                                         data-harga="' . $produk['harga'] . '" 
+                                         data-stok="' . $produk['stok'] . '"
+                                         data-rating="' . $rating . '"
+                                         data-nama="' . strtolower(htmlspecialchars($produk['nama_produk'])) . '">
+                                        <div class="relative overflow-hidden">
+                                            <div class="p-6 gradient-bg flex items-center justify-center h-56">
+                                                <img src="' . $foto . '" alt="' . htmlspecialchars($produk['nama_produk']) . '" 
+                                                     class="w-full h-full object-contain transform hover:scale-110 transition duration-500"
+                                                     onerror="this.src=\'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png\'">
+                                            </div>
+                                            <div class="absolute top-4 right-4">
+                                                <span class="' . $stok_badge . ' text-white text-xs font-bold px-3 py-1 rounded-full">' . $stok . '</span>
+                                            </div>
+                                            <div class="absolute top-4 left-4">
+                                                <span class="bg-yellow-400 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">
+                                                    <i class="fas fa-star mr-1"></i>' . $rating . '
+                                                </span>
+                                            </div>
+                                            <div class="absolute bottom-4 left-4">
+                                                <span class="bg-white/90 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
+                                                    ' . htmlspecialchars($kategori) . '
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="p-6">
+                                            <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2">' . htmlspecialchars($produk['nama_produk']) . '</h3>
+                                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">' . htmlspecialchars(substr($produk['deskripsi'], 0, 80)) . '...</p>
+                                            <div class="flex justify-between items-center">
+                                                <div>
+                                                    <span class="font-bold text-2xl pink-text">Rp ' . $harga . '</span>
+                                                    <p class="text-gray-500 text-sm line-through">Rp ' . number_format($produk['harga'] * 1.2, 0, ',', '.') . '</p>
+                                                </div>
+                                                <button class="w-12 h-12 gradient-bg text-white rounded-xl hover:shadow-lg transition transform hover:scale-110 flex items-center justify-center ' . ($produk['stok'] == 0 ? 'opacity-50 cursor-not-allowed' : '') . '" ' . ($produk['stok'] == 0 ? 'disabled' : '') . '>
+                                                    ' . ($produk['stok'] == 0 ? '<i class="fas fa-times"></i>' : '<i class="fas fa-shopping-cart"></i>') . '
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>';
+                                }
+                            } else {
+                                echo '<div class="col-span-3 text-center py-8">
+                                        <div class="bg-gray-50 rounded-2xl p-12">
+                                            <i class="fas fa-box-open text-gray-400 text-6xl mb-4"></i>
+                                            <p class="text-gray-500 text-xl mb-4">Tidak ada produk yang tersedia.</p>
+                                            <a href="index.php" class="inline-flex items-center px-6 py-3 gradient-bg text-white font-semibold rounded-2xl hover:shadow-lg transition">
+                                                <i class="fas fa-home mr-2"></i>Kembali ke Beranda
+                                            </a>
+                                        </div>
+                                      </div>';
+                            }
+                        }
+                        
+                        // Tutup koneksi
+                        mysqli_close($koneksi);
+                        ?>
                     </div>
-                    <div class="p-6">
-                        <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2">' . htmlspecialchars($produk['nama_produk']) . '</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">' . htmlspecialchars(substr($produk['deskripsi'], 0, 80)) . '...</p>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-2xl pink-text">Rp ' . $harga . '</span>
-                                <p class="text-gray-500 text-sm line-through">Rp ' . number_format($produk['harga'] * 1.2, 0, ',', '.') . '</p>
-                            </div>
-                            <button class="w-12 h-12 gradient-bg text-white rounded-xl hover:shadow-lg transition transform hover:scale-110 flex items-center justify-center ' . ($produk['stok'] == 0 ? 'opacity-50 cursor-not-allowed' : '') . '" ' . ($produk['stok'] == 0 ? 'disabled' : '') . '>
-                                ' . ($produk['stok'] == 0 ? '<i class="fas fa-times"></i>' : '<i class="fas fa-shopping-cart"></i>') . '
-                            </button>
-                        </div>
-                    </div>
-                </div>';
-            }
-        } else {
-            echo '<div class="col-span-3 text-center py-8">
-                    <div class="bg-gray-50 rounded-2xl p-12">
-                        <i class="fas fa-box-open text-gray-400 text-6xl mb-4"></i>
-                        <p class="text-gray-500 text-xl mb-4">Tidak ada produk yang tersedia.</p>
-                        <a href="index.php" class="inline-flex items-center px-6 py-3 gradient-bg text-white font-semibold rounded-2xl hover:shadow-lg transition">
-                            <i class="fas fa-home mr-2"></i>Kembali ke Beranda
-                        </a>
-                    </div>
-                  </div>';
-        }
-    }
-    
-    // Tutup koneksi
-    mysqli_close($koneksi);
-    ?>
-</div>
                     
                     <!-- Pagination -->
                     <div class="flex justify-center mt-12">
@@ -578,14 +584,11 @@
                     </h3>
                     <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Anda.</p>
                     <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/moods_strap?igsh=MTB1cnRreWNmejJ6OA==" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                        <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
                             <i class="fab fa-instagram group-hover:text-white"></i>
                         </a>
-                        
-                        </a>
-                        <a href="https://wa.me/6282162961621" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                        <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
                             <i class="fab fa-whatsapp group-hover:text-white"></i>
-                       
                         </a>
                     </div>
                 </div>
@@ -604,11 +607,11 @@
                 <div>
                     <h4 class="font-bold text-lg mb-6">Bantuan</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Cara Belanja</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pembayaran</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pengiriman</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>FAQ</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Kebijakan Privasi</a></li>
+                        <li><a href="cara-belanja.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Cara Belanja</a></li>
+                        <li><a href="pembayaran.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pembayaran</a></li>
+                        <li><a href="pengiriman.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pengiriman</a></li>
+                        <li><a href="faq.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>FAQ</a></li>
+                        <li><a href="kebijakan-privasi.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Kebijakan Privasi</a></li>
                     </ul>
                 </div>
                 
@@ -617,11 +620,11 @@
                     <ul class="space-y-4">
                         <li class="flex items-center">
                             <i class="fas fa-map-marker-alt pink-text mr-4 w-5"></i>
-                            <span class="text-gray-400">Jakarta, Indonesia</span>
+                            <span class="text-gray-400">Medan, Indonesia</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone pink-text mr-4 w-5"></i>
-                            <span class="text-gray-400">+62 821 6296 1621</span>
+                            <span class="text-gray-400">+62 821-6296-1621</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope pink-text mr-4 w-5"></i>
@@ -864,6 +867,19 @@
                 productsContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
                 gridView.classList.add('bg-white', 'text-pink-500');
                 listView.classList.remove('bg-white', 'text-pink-500');
+                
+                // Reset card layout
+                productCards.forEach(card => {
+                    card.classList.remove('flex', 'items-center');
+                    const imgContainer = card.querySelector('.relative');
+                    const contentContainer = card.querySelector('.p-6');
+                    
+                    if (imgContainer && contentContainer) {
+                        imgContainer.className = 'relative overflow-hidden';
+                        imgContainer.querySelector('div').className = 'p-6 gradient-bg flex items-center justify-center h-56';
+                        contentContainer.className = 'p-6';
+                    }
+                });
             });
             
             listView.addEventListener('click', function() {
@@ -888,6 +904,9 @@
             // Initialize price display
             minPriceValue.textContent = formatRupiah(minPrice.value);
             maxPriceValue.textContent = formatRupiah(maxPrice.value);
+            
+            // Initialize product count
+            productCount.textContent = `Menampilkan semua ${productCards.length} produk`;
         });
     </script>
 </body>
