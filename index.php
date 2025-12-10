@@ -155,7 +155,6 @@
             <nav class="hidden md:flex space-x-8">
                 <a href="index.php" class="nav-link text-pink-500 font-semibold transition">Beranda</a>
                 <a href="produk.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Produk</a>
-                <a href="koleksi.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Koleksi</a>
                 <a href="tentang.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Tentang Kami</a>
                 <a href="kontak.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Kontak</a>
             </nav>
@@ -193,9 +192,7 @@
                 <a href="produk.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
                     <i class="fas fa-box mr-3"></i>Produk
                 </a>
-                <a href="koleksi.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
-                    <i class="fas fa-layer-group mr-3"></i>Koleksi
-                </a>
+
                 <a href="tentang.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
                     <i class="fas fa-info-circle mr-3"></i>Tentang Kami
                 </a>
@@ -252,15 +249,8 @@
                     </div>
                     <div class="container mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
                         <div class="md:w-1/2 mb-8 md:mb-0">
-                            <h2 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                                Koleksi <span class="text-green-300">Terbaru</span>
-                            </h2>
                             <p class="text-white/90 text-lg mb-8 max-w-md">Dapatkan gantungan HP dengan desain kekinian dan bahan premium untuk melengkapi gaya Anda. Limited edition hanya untuk Anda!</p>
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <!-- TOMBOL LIhat Koleksi YANG BISA DITEKAN -->
-                                <button onclick="window.location.href='koleksi.php';" class="px-8 py-4 bg-white text-purple-500 font-bold rounded-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-lg">
-                                    <i class="fas fa-star mr-2"></i>Lihat Koleksi
-                                </button>
                                 
                                 <!-- TOMBOL Wishlist YANG BISA DITEKAN -->
                                 <button onclick="window.location.href='produk.php';" class="px-8 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition transform hover:scale-105">
@@ -622,7 +612,6 @@
                     <ul class="space-y-3">
                         <li><a href="index.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Beranda</a></li>
                         <li><a href="produk.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Produk</a></li>
-                        <li><a href="koleksi.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Koleksi</a></li>
                         <li><a href="tentang.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Tentang Kami</a></li>
                         <li><a href="kontak.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Kontak</a></li>
                     </ul>

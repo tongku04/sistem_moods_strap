@@ -169,7 +169,6 @@
             <nav class="hidden md:flex space-x-8">
                 <a href="index.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Beranda</a>
                 <a href="produk.php" class="nav-link text-pink-500 font-semibold transition">Produk</a>
-                <a href="koleksi.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Koleksi</a>
                 <a href="tentang.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Tentang Kami</a>
                 <a href="kontak.php" class="nav-link text-gray-700 font-medium hover:text-pink-500 transition">Kontak</a>
             </nav>
@@ -206,9 +205,6 @@
                 </a>
                 <a href="produk.php" class="block py-3 px-4 text-pink-500 bg-pink-50 rounded-lg font-semibold transition mb-2">
                     <i class="fas fa-box mr-3"></i>Produk
-                </a>
-                <a href="koleksi.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
-                    <i class="fas fa-layer-group mr-3"></i>Koleksi
                 </a>
                 <a href="tentang.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
                     <i class="fas fa-info-circle mr-3"></i>Tentang Kami
@@ -598,7 +594,6 @@
                     <ul class="space-y-3">
                         <li><a href="index.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Beranda</a></li>
                         <li><a href="produk.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Produk</a></li>
-                        <li><a href="koleksi.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Koleksi</a></li>
                         <li><a href="tentang.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Tentang Kami</a></li>
                         <li><a href="kontak.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Kontak</a></li>
                     </ul>
