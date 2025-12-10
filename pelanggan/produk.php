@@ -576,7 +576,7 @@ if ($user_logged_in && $user_role === 'pelanggan') {
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone pink-text mr-4 w-5"></i>
-                            <span class="text-gray-400">+62 812 3456 7890</span>
+                            <span class="text-gray-400">+62 821-6296-1621</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope pink-text mr-4 w-5"></i>
