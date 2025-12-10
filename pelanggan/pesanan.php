@@ -655,10 +655,34 @@ if (!$stats) {
                                     <?php while ($detail = mysqli_fetch_assoc($result_detail)): ?>
                                         <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                                             <div class="w-16 h-16 bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg flex items-center justify-center">
-                                                <img src="<?php echo $detail['foto'] ? '../admin/uploads/produk/' . htmlspecialchars($detail['foto']) : 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png'; ?>" 
-                                                     alt="<?php echo htmlspecialchars($detail['nama_produk']); ?>" 
-                                                     class="w-12 h-12 object-contain"
-                                                     onerror="this.src='https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png'">
+                                            <?php
+// Perbaiki path gambar
+$gambar_path = '';
+if (!empty($detail['foto'])) {
+    // Cek apakah file ada di path admin/uploads/produk/
+    if (file_exists('../admin/uploads/produk/' . $detail['foto'])) {
+        $gambar_path = '../admin/uploads/produk/' . htmlspecialchars($detail['foto']);
+    } 
+    // Cek apakah file ada di path uploads/produk/ (relatif terhadap root)
+    else if (file_exists('uploads/produk/' . $detail['foto'])) {
+        $gambar_path = 'uploads/produk/' . htmlspecialchars($detail['foto']);
+    }
+    // Coba cari di lokasi lain
+    else if (file_exists($detail['foto'])) {
+        $gambar_path = $detail['foto'];
+    } else {
+        // Gunakan gambar default jika tidak ditemukan
+        $gambar_path = 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png';
+    }
+} else {
+    $gambar_path = 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png';
+}
+?>
+
+<img src="<?php echo $gambar_path; ?>" 
+     alt="<?php echo htmlspecialchars($detail['nama_produk']); ?>" 
+     class="w-12 h-12 object-contain"
+     onerror="this.onerror=null; this.src='https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png'">
                                             </div>
                                             <div class="flex-1">
                                                 <h4 class="font-medium text-gray-800"><?php echo htmlspecialchars($detail['nama_produk']); ?></h4>
