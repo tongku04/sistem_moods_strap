@@ -285,11 +285,11 @@ if ($user_logged_in && $user_role === 'pelanggan') {
         <a href="produk.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
             <i class="fas fa-box mr-3"></i>Produk
         </a>
-        <a href="tentang.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
-            <i class="fas fa-info-circle mr-3"></i>Tentang Kami
+        <a href="Keranjang.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
+            <i class="fas fa-info-circle mr-3"></i>Keranjang
         </a>
-        <a href="kontak.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition">
-            <i class="fas fa-envelope mr-3"></i>Kontak
+        <a href="Pesanan.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition">
+            <i class="fas fa-envelope mr-3"></i>Pesanan
         </a>
     </nav>
 </div>
