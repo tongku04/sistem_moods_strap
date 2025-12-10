@@ -178,7 +178,7 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
                 </button>
-                <a href="/Berak/auth/login.php" class="p-2 text-gray-700 hover:text-pink-500 transition group">
+                <a href="auth/Register.php" class="p-2 text-gray-700 hover:text-pink-500 transition group">
                     <i class="fas fa-user"></i>
                 </a>
                 <button id="mobile-menu-button" class="md:hidden p-2 text-gray-700 hover:text-pink-500 transition">
