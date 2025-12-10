@@ -235,7 +235,7 @@ function logActivity($koneksi, $userId, $activity, $description) {
  */
 function redirectBasedOnRole($role) {
     $redirects = [
-        'admin' => '../admin/index.php',
+        'admin' => '../Admin/index.php',
         'kasir' => '../kasir/index.php', 
         'owner' => '../owner/index.php',
         'pelanggan' => '../pelanggan/index.php'
