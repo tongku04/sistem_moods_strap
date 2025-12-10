@@ -214,11 +214,11 @@
             <div class="p-4 border-t border-gray-100">
                 <h4 class="font-bold text-gray-800 mb-4">Ikuti Kami</h4>
                 <div class="flex space-x-4">
-                    <a href="https://instagram.com/moodsstrap" target="_blank" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition transform hover:scale-110">
+                    <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition transform hover:scale-110">
                         <i class="fab fa-instagram"></i>
                     </a>
                     </a>
-                    <a href="https://wa.me/6281234567890" target="_blank" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition transform hover:scale-110">
+                    <a href="https://wa.me/+6282162961621" target="_blank" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition transform hover:scale-110">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                     
