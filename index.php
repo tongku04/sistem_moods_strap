@@ -511,7 +511,7 @@
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-xl">A</div>
                         <div class="ml-4">
-                            <h4 class="font-bold text-gray-800 text-lg">Amelia Putri</h4>
+                            <h4 class="font-bold text-gray-800 text-lg">Syeila</h4>
                             <div class="flex text-yellow-400">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -529,7 +529,7 @@
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-xl">R</div>
                         <div class="ml-4">
-                            <h4 class="font-bold text-gray-800 text-lg">Rina Sari</h4>
+                            <h4 class="font-bold text-gray-800 text-lg">Rara</h4>
                             <div class="flex text-yellow-400">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -547,7 +547,7 @@
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-xl">D</div>
                         <div class="ml-4">
-                            <h4 class="font-bold text-gray-800 text-lg">Dewi Lestari</h4>
+                            <h4 class="font-bold text-gray-800 text-lg">Egi</h4>
                             <div class="flex text-yellow-400">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -580,26 +580,28 @@
         </div>
     </section>
 
-    <!-- Footer -->
+        <!-- Footer -->
     <footer class="bg-gray-800 text-white pt-16 pb-8">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
                     <h3 class="text-xl font-bold mb-6 flex items-center">
-                        <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-gem text-white text-sm"></i>
+                        <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-12 h-12 rounded-full object cover" alt="Logo">
+                         <div class="flex items-center justify-center mr-3">
+                         </div>
+
+                        <div class="flex items-center">
+                        
                         </div>
                         Moods <span class="text-gray-300">Strap</span>
                     </h3>
-                    <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Anda.</p>
+                    <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Hp Anda.</p>
                     <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition">
-                            <i class="fab fa-instagram"></i>
+                        <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                            <i class="fab fa-instagram group-hover:text-white"></i>
                         </a>
-                        <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                        </a>
+                        <a href="https://wa.me/6282162961621" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
                             <i class="fab fa-whatsapp group-hover:text-white"></i>
                         </a>
                     </div>

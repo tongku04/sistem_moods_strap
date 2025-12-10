@@ -2,6 +2,10 @@
 session_start();
 include '../config/koneksi.php';
 
+// Error reporting untuk debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Cek koneksi berhasil
 if (!$koneksi) {
     die("Koneksi database gagal");
@@ -16,9 +20,12 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'pelanggan') {
 $user_id = $_SESSION['user']['id_user'];
 $username = $_SESSION['user']['username'];
 
-// Ambil data pelanggan
-$query_pelanggan = "SELECT * FROM pelanggan WHERE id_user = '$user_id'";
-$result_pelanggan = mysqli_query($koneksi, $query_pelanggan);
+// Ambil data pelanggan berdasarkan id_user
+$query_pelanggan = "SELECT * FROM pelanggan WHERE id_user = ?";
+$stmt_pelanggan = mysqli_prepare($koneksi, $query_pelanggan);
+mysqli_stmt_bind_param($stmt_pelanggan, "i", $user_id);
+mysqli_stmt_execute($stmt_pelanggan);
+$result_pelanggan = mysqli_stmt_get_result($stmt_pelanggan);
 $data_pelanggan = mysqli_fetch_assoc($result_pelanggan);
 
 if (!$data_pelanggan) {
@@ -27,33 +34,222 @@ if (!$data_pelanggan) {
 
 $id_pelanggan = $data_pelanggan['id_pelanggan'];
 
-// Ambil parameter filter
-$status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
-$search_query = isset($_GET['search']) ? $_GET['search'] : '';
+// ====================== PROSES BATAL PESANAN ======================
+if (isset($_POST['action']) && $_POST['action'] == 'batalkan_pesanan' && isset($_POST['order_id'])) {
+    $order_id = mysqli_real_escape_string($koneksi, $_POST['order_id']);
+    
+    // Cek apakah pesanan milik pelanggan ini dan statusnya masih pending
+    $check_query = "SELECT * FROM penjualan 
+                    WHERE id_penjualan = ? 
+                    AND id_pelanggan = ? 
+                    AND status_pesanan = 'pending'";
+    $stmt_check = mysqli_prepare($koneksi, $check_query);
+    mysqli_stmt_bind_param($stmt_check, "ii", $order_id, $id_pelanggan);
+    mysqli_stmt_execute($stmt_check);
+    $check_result = mysqli_stmt_get_result($stmt_check);
+    
+    if (mysqli_num_rows($check_result) === 0) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Pesanan tidak ditemukan atau tidak dapat dibatalkan'
+        ]);
+        exit;
+    }
+    
+    // Update status pesanan menjadi dibatalkan
+    $update_query = "UPDATE penjualan 
+                     SET status_pesanan = 'dibatalkan' 
+                     WHERE id_penjualan = ? 
+                     AND id_pelanggan = ?";
+    
+    $stmt_update = mysqli_prepare($koneksi, $update_query);
+    mysqli_stmt_bind_param($stmt_update, "ii", $order_id, $id_pelanggan);
+    
+    if (mysqli_stmt_execute($stmt_update)) {
+        // Kembalikan stok produk
+        $detail_query = "SELECT dp.id_produk, dp.jumlah 
+                         FROM detail_penjualan dp 
+                         WHERE dp.id_penjualan = ?";
+        $stmt_detail = mysqli_prepare($koneksi, $detail_query);
+        mysqli_stmt_bind_param($stmt_detail, "i", $order_id);
+        mysqli_stmt_execute($stmt_detail);
+        $detail_result = mysqli_stmt_get_result($stmt_detail);
+        
+        while ($detail = mysqli_fetch_assoc($detail_result)) {
+            $id_produk = $detail['id_produk'];
+            $jumlah = $detail['jumlah'];
+            
+            // Update stok produk
+            $update_stok = "UPDATE produk 
+                           SET stok = stok + ? 
+                           WHERE id_produk = ?";
+            $stmt_stok = mysqli_prepare($koneksi, $update_stok);
+            mysqli_stmt_bind_param($stmt_stok, "ii", $jumlah, $id_produk);
+            mysqli_stmt_execute($stmt_stok);
+        }
+        
+        echo json_encode(['success' => true, 'message' => 'Pesanan berhasil dibatalkan']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Gagal membatalkan pesanan: ' . mysqli_error($koneksi)]);
+    }
+    exit;
+}
 
-// Query untuk mengambil pesanan
+// ====================== PROSES KONFIRMASI PENERIMAAN ======================
+if (isset($_POST['action']) && $_POST['action'] == 'konfirmasi_penerimaan' && isset($_POST['order_id'])) {
+    $order_id = mysqli_real_escape_string($koneksi, $_POST['order_id']);
+    
+    // Cek apakah pesanan milik pelanggan ini dan statusnya dikirim
+    $check_query = "SELECT * FROM penjualan 
+                    WHERE id_penjualan = ? 
+                    AND id_pelanggan = ? 
+                    AND status_pesanan = 'dikirim'";
+    $stmt_check = mysqli_prepare($koneksi, $check_query);
+    mysqli_stmt_bind_param($stmt_check, "ii", $order_id, $id_pelanggan);
+    mysqli_stmt_execute($stmt_check);
+    $check_result = mysqli_stmt_get_result($stmt_check);
+    
+    if (mysqli_num_rows($check_result) === 0) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Pesanan tidak ditemukan atau tidak dapat dikonfirmasi'
+        ]);
+        exit;
+    }
+    
+    // Update status pesanan menjadi selesai
+    $update_query = "UPDATE penjualan 
+                     SET status_pesanan = 'selesai' 
+                     WHERE id_penjualan = ? 
+                     AND id_pelanggan = ?";
+    
+    $stmt_update = mysqli_prepare($koneksi, $update_query);
+    mysqli_stmt_bind_param($stmt_update, "ii", $order_id, $id_pelanggan);
+    
+    if (mysqli_stmt_execute($stmt_update)) {
+        echo json_encode(['success' => true, 'message' => 'Pesanan berhasil dikonfirmasi']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Gagal mengkonfirmasi pesanan: ' . mysqli_error($koneksi)]);
+    }
+    exit;
+}
+
+// ====================== PROSES KONFIRMASI PEMBAYARAN WHATSAPP ======================
+if (isset($_POST['action']) && $_POST['action'] == 'konfirmasi_pembayaran_wa' && isset($_POST['order_id'])) {
+    $order_id = intval($_POST['order_id']);
+    
+    // Cek apakah pesanan milik pelanggan ini dan statusnya pending
+    $check_query = "SELECT p.*, pl.nama_lengkap, pl.email, pl.telepon 
+                    FROM penjualan p
+                    JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
+                    WHERE p.id_penjualan = ? 
+                    AND p.id_pelanggan = ? 
+                    AND p.status_pesanan = 'pending' 
+                    AND p.status_pembayaran = 'pending'";
+    
+    $stmt_check = mysqli_prepare($koneksi, $check_query);
+    if (!$stmt_check) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error preparing statement: ' . mysqli_error($koneksi)
+        ]);
+        exit;
+    }
+    
+    mysqli_stmt_bind_param($stmt_check, "ii", $order_id, $id_pelanggan);
+    
+    if (!mysqli_stmt_execute($stmt_check)) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error executing query: ' . mysqli_error($koneksi)
+        ]);
+        exit;
+    }
+    
+    $check_result = mysqli_stmt_get_result($stmt_check);
+    
+    if (mysqli_num_rows($check_result) === 0) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Pesanan tidak ditemukan atau tidak dapat melakukan pembayaran'
+        ]);
+        exit;
+    }
+    
+    $pesanan = mysqli_fetch_assoc($check_result);
+    $no_pesanan = str_pad($pesanan['id_penjualan'], 6, '0', STR_PAD_LEFT);
+    $total_harga = number_format($pesanan['total'], 0, ',', '.');
+    $nama_pelanggan = $pesanan['nama_lengkap'] ? $pesanan['nama_lengkap'] : $username;
+    $no_telepon = $pesanan['telepon'] ? $pesanan['telepon'] : '-';
+    
+    // Buat pesan WhatsApp
+    $whatsapp_number = "082215254298"; // Ganti dengan nomor WhatsApp admin
+    
+    // Format pesan
+    $message = "Halo Admin Moods Strap,%0A%0A";
+    $message .= "Saya ingin mengirimkan bukti pembayaran untuk pesanan:%0A";
+    $message .= "📦 *No. Pesanan:* #$no_pesanan%0A";
+    $message .= "👤 *Nama Pelanggan:* $nama_pelanggan%0A";
+    $message .= "📱 *No. Telepon:* $no_telepon%0A";
+    $message .= "✉️ *Email:* " . ($pesanan['email'] ? $pesanan['email'] : '-') . "%0A";
+    $message .= "💰 *Total Pembayaran:* Rp $total_harga%0A";
+    $message .= "📅 *Tanggal Pesan:* " . date('d M Y H:i', strtotime($pesanan['tanggal'])) . "%0A%0A";
+    $message .= "Bukti pembayaran akan saya kirim di chat ini.%0A%0A";
+    $message .= "Mohon konfirmasi setelah menerima pembayaran. Terima kasih!%0A%0A";
+    $message .= "_Pesan ini dikirim otomatis dari sistem Moods Strap_";
+    
+    $whatsapp_url = "https://wa.me/$whatsapp_number?text=" . $message;
+    
+    echo json_encode([
+        'success' => true, 
+        'message' => 'Arahkan ke WhatsApp untuk mengirim bukti pembayaran',
+        'whatsapp_url' => $whatsapp_url
+    ]);
+    exit;
+}
+
+// ====================== TAMPILAN HALAMAN PESANAN ======================
+// Ambil parameter filter
+$status_filter = isset($_GET['status']) ? mysqli_real_escape_string($koneksi, $_GET['status']) : 'all';
+$search_query = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
+
+// Query untuk mengambil pesanan dengan prepared statement
 $query_pesanan = "SELECT p.*, 
                          COUNT(dp.id_detail) as total_items,
                          SUM(dp.jumlah) as total_quantity
                   FROM penjualan p 
                   LEFT JOIN detail_penjualan dp ON p.id_penjualan = dp.id_penjualan
-                  WHERE p.id_pelanggan = '$id_pelanggan'";
+                  WHERE p.id_pelanggan = ?";
+
+$params = array($id_pelanggan);
+$types = "i";
 
 // Tambahkan filter status
 if ($status_filter !== 'all') {
-    $query_pesanan .= " AND p.status_pesanan = '$status_filter'";
+    $query_pesanan .= " AND p.status_pesanan = ?";
+    $params[] = $status_filter;
+    $types .= "s";
 }
 
 // Tambahkan pencarian
 if (!empty($search_query)) {
-    $query_pesanan .= " AND p.id_penjualan LIKE '%$search_query%'";
+    $query_pesanan .= " AND p.id_penjualan = ?";
+    $params[] = intval($search_query);
+    $types .= "i";
 }
 
 $query_pesanan .= " GROUP BY p.id_penjualan ORDER BY p.tanggal DESC";
 
-$result_pesanan = mysqli_query($koneksi, $query_pesanan);
+$stmt_pesanan = mysqli_prepare($koneksi, $query_pesanan);
+if ($stmt_pesanan) {
+    mysqli_stmt_bind_param($stmt_pesanan, $types, ...$params);
+    mysqli_stmt_execute($stmt_pesanan);
+    $result_pesanan = mysqli_stmt_get_result($stmt_pesanan);
+} else {
+    die("Error preparing statement: " . mysqli_error($koneksi));
+}
 
-// Hitung statistik pesanan
+// Hitung statistik pesanan dengan prepared statement
 $query_stats = "SELECT 
     COUNT(*) as total_pesanan,
     SUM(CASE WHEN status_pesanan = 'pending' THEN 1 ELSE 0 END) as pending,
@@ -62,10 +258,25 @@ $query_stats = "SELECT
     SUM(CASE WHEN status_pesanan = 'selesai' THEN 1 ELSE 0 END) as selesai,
     SUM(CASE WHEN status_pesanan = 'dibatalkan' THEN 1 ELSE 0 END) as dibatalkan
 FROM penjualan 
-WHERE id_pelanggan = '$id_pelanggan'";
+WHERE id_pelanggan = ?";
 
-$result_stats = mysqli_query($koneksi, $query_stats);
+$stmt_stats = mysqli_prepare($koneksi, $query_stats);
+mysqli_stmt_bind_param($stmt_stats, "i", $id_pelanggan);
+mysqli_stmt_execute($stmt_stats);
+$result_stats = mysqli_stmt_get_result($stmt_stats);
 $stats = mysqli_fetch_assoc($result_stats);
+
+// Set default values if null
+if (!$stats) {
+    $stats = [
+        'total_pesanan' => 0,
+        'pending' => 0,
+        'diproses' => 0,
+        'dikirim' => 0,
+        'selesai' => 0,
+        'dibatalkan' => 0
+    ];
+}
 ?>
 
 <!DOCTYPE html>
@@ -141,6 +352,69 @@ $stats = mysqli_fetch_assoc($result_stats);
         .status-dikirim { background-color: #d1fae5; color: #065f46; }
         .status-selesai { background-color: #dcfce7; color: #166534; }
         .status-dibatalkan { background-color: #fee2e2; color: #991b1b; }
+        
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .payment-info {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -172,9 +446,6 @@ $stats = mysqli_fetch_assoc($result_stats);
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                        <a href="profil.php" class="block px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-500 transition">
-                            <i class="fas fa-user-circle mr-2"></i>Profil Saya
-                        </a>
                         <a href="pesanan.php" class="block px-4 py-2 text-pink-500 bg-pink-50 transition">
                             <i class="fas fa-shopping-bag mr-2"></i>Pesanan Saya
                         </a>
@@ -320,13 +591,16 @@ $stats = mysqli_fetch_assoc($result_stats);
                 <?php if ($result_pesanan && mysqli_num_rows($result_pesanan) > 0): ?>
                     <?php while ($pesanan = mysqli_fetch_assoc($result_pesanan)): ?>
                         <?php
-                        // Ambil detail produk untuk pesanan ini
+                        // Ambil detail produk untuk pesanan ini dengan prepared statement
                         $id_penjualan = $pesanan['id_penjualan'];
                         $query_detail = "SELECT dp.*, p.nama_produk, p.foto 
                                         FROM detail_penjualan dp 
                                         JOIN produk p ON dp.id_produk = p.id_produk 
-                                        WHERE dp.id_penjualan = '$id_penjualan'";
-                        $result_detail = mysqli_query($koneksi, $query_detail);
+                                        WHERE dp.id_penjualan = ?";
+                        $stmt_detail = mysqli_prepare($koneksi, $query_detail);
+                        mysqli_stmt_bind_param($stmt_detail, "i", $id_penjualan);
+                        mysqli_stmt_execute($stmt_detail);
+                        $result_detail = mysqli_stmt_get_result($stmt_detail);
                         
                         // Format data
                         $tanggal = date('d M Y H:i', strtotime($pesanan['tanggal']));
@@ -336,6 +610,11 @@ $stats = mysqli_fetch_assoc($result_stats);
                         // Status badge
                         $status_class = "status-" . $pesanan['status_pesanan'];
                         $status_text = ucfirst($pesanan['status_pesanan']);
+                        
+                        // Tentukan tombol yang ditampilkan berdasarkan status
+                        $show_cancel_button = ($pesanan['status_pesanan'] === 'pending');
+                        $show_pay_button = ($pesanan['status_pesanan'] === 'pending' && $pesanan['status_pembayaran'] === 'pending');
+                        $show_confirm_button = ($pesanan['status_pesanan'] === 'dikirim');
                         ?>
                         
                         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -350,6 +629,15 @@ $stats = mysqli_fetch_assoc($result_stats);
                                         <span class="status-badge <?php echo $status_class; ?>">
                                             <?php echo $status_text; ?>
                                         </span>
+                                        <?php if ($pesanan['status_pembayaran'] === 'paid'): ?>
+                                            <span class="status-badge bg-green-100 text-green-800">
+                                                Lunas
+                                            </span>
+                                        <?php elseif ($pesanan['status_pembayaran'] === 'pending' && $pesanan['status_pesanan'] !== 'dibatalkan'): ?>
+                                            <span class="status-badge bg-yellow-100 text-yellow-800">
+                                                Belum Bayar
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="text-right">
                                         <p class="text-lg font-bold pink-text">Rp <?php echo $total_harga; ?></p>
@@ -367,7 +655,7 @@ $stats = mysqli_fetch_assoc($result_stats);
                                     <?php while ($detail = mysqli_fetch_assoc($result_detail)): ?>
                                         <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                                             <div class="w-16 h-16 bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg flex items-center justify-center">
-                                                <img src="<?php echo $detail['foto'] ? '../admin/uploads/produk/' . $detail['foto'] : 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png'; ?>" 
+                                                <img src="<?php echo $detail['foto'] ? '../admin/uploads/produk/' . htmlspecialchars($detail['foto']) : 'https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png'; ?>" 
                                                      alt="<?php echo htmlspecialchars($detail['nama_produk']); ?>" 
                                                      class="w-12 h-12 object-contain"
                                                      onerror="this.src='https://cdn.pixabay.com/photo/2022/01/30/19/46/phone-charms-6981833_1280.png'">
@@ -391,18 +679,26 @@ $stats = mysqli_fetch_assoc($result_stats);
                                         <?php endif; ?>
                                     </div>
                                     <div class="flex space-x-3">
-                                        <?php if ($pesanan['status_pesanan'] === 'pending'): ?>
+                                        <?php if ($show_cancel_button): ?>
                                             <button onclick="batalkanPesanan(<?php echo $pesanan['id_penjualan']; ?>)" 
-                                                    class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-medium">
+                                                    class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-medium"
+                                                    id="btn-batal-<?php echo $pesanan['id_penjualan']; ?>">
                                                 Batalkan Pesanan
                                             </button>
-                                            <a href="pembayaran.php?id=<?php echo $pesanan['id_penjualan']; ?>" 
-                                               class="px-4 py-2 gradient-bg text-white rounded-xl hover:shadow-lg transition font-medium">
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($show_pay_button): ?>
+                                            <button onclick="showPaymentModal(<?php echo $pesanan['id_penjualan']; ?>, <?php echo $pesanan['total']; ?>, '<?php echo $no_pesanan; ?>')" 
+                                                    class="px-4 py-2 gradient-bg text-white rounded-xl hover:shadow-lg transition font-medium"
+                                                    id="btn-bayar-<?php echo $pesanan['id_penjualan']; ?>">
                                                 Bayar Sekarang
-                                            </a>
-                                        <?php elseif ($pesanan['status_pesanan'] === 'dikirim'): ?>
+                                            </button>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($show_confirm_button): ?>
                                             <button onclick="konfirmasiPenerimaan(<?php echo $pesanan['id_penjualan']; ?>)" 
-                                                    class="px-4 py-2 gradient-bg text-white rounded-xl hover:shadow-lg transition font-medium">
+                                                    class="px-4 py-2 gradient-bg text-white rounded-xl hover:shadow-lg transition font-medium"
+                                                    id="btn-konfirmasi-<?php echo $pesanan['id_penjualan']; ?>">
                                                 Konfirmasi Diterima
                                             </button>
                                         <?php endif; ?>
@@ -418,9 +714,11 @@ $stats = mysqli_fetch_assoc($result_stats);
                     <?php endwhile; ?>
                 <?php else: ?>
                     <!-- Empty State -->
-                    <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
+                    <div class="empty-state rounded-2xl shadow-lg p-12 text-center">
                         <div class="max-w-md mx-auto">
-                            <i class="fas fa-shopping-bag text-gray-400 text-6xl mb-4"></i>
+                            <div class="w-24 h-24 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-shopping-bag text-white text-4xl"></i>
+                            </div>
                             <h3 class="text-2xl font-bold text-gray-700 mb-2">Belum Ada Pesanan</h3>
                             <p class="text-gray-500 mb-6">Anda belum memiliki pesanan. Yuk mulai berbelanja!</p>
                             <a href="produk.php" class="inline-flex items-center px-6 py-3 gradient-bg text-white font-semibold rounded-xl hover:shadow-lg transition">
@@ -432,6 +730,101 @@ $stats = mysqli_fetch_assoc($result_stats);
             </div>
         </div>
     </main>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">Pembayaran Pesanan</h3>
+                    <button onclick="closePaymentModal()" class="p-2 text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Order Info -->
+                    <div class="payment-info rounded-xl p-4">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">No. Pesanan:</span>
+                            <span class="font-semibold" id="payment-order-number"></span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span class="text-gray-800 font-medium">Total Pembayaran:</span>
+                            <span class="font-bold pink-text" id="payment-total"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Instructions -->
+                    <div class="space-y-4">
+                        <h4 class="font-semibold text-gray-800">Cara Pembayaran:</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-bold text-sm">1</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800">Transfer ke salah satu rekening berikut:</p>
+                                    <div class="mt-2 space-y-2 bg-pink-50 p-3 rounded-lg">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Bank BCA:</span>
+                                            <span class="font-mono font-bold">1234 5678 9012</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Bank Mandiri:</span>
+                                            <span class="font-mono font-bold">3456 7890 1234</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Bank BRI:</span>
+                                            <span class="font-mono font-bold">5678 9012 3456</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-2">a.n. <strong>Moods Strap</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-bold text-sm">2</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800">Setelah transfer, kirim bukti pembayaran melalui WhatsApp:</p>
+                                    <button onclick="prosesPembayaranWA()" 
+                                            class="mt-3 w-full px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition font-medium flex items-center justify-center"
+                                            id="btn-whatsapp">
+                                        <i class="fab fa-whatsapp mr-2"></i>
+                                        <span id="btn-whatsapp-text">Kirim Bukti ke WhatsApp</span>
+                                    </button>
+                                    <p class="text-sm text-gray-600 mt-2">Anda akan diarahkan ke WhatsApp untuk mengirim bukti transfer</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-bold text-sm">3</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800">Tunggu konfirmasi admin:</p>
+                                    <p class="text-sm text-gray-600 mt-1">Status pesanan akan berubah menjadi "Diproses" setelah pembayaran dikonfirmasi oleh admin (maksimal 1x24 jam).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3 mt-8 pt-6 border-t border-gray-200">
+                    <button onclick="closePaymentModal()" 
+                            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition font-medium">
+                        Kembali
+                    </button>
+                    <button onclick="copyPaymentInfo()" 
+                            class="flex-1 px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition font-medium">
+                        Salin Info Rekening
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white pt-16 pb-8 mt-16">
@@ -526,57 +919,230 @@ $stats = mysqli_fetch_assoc($result_stats);
             });
         });
 
+        // Payment modal variables
+        let currentOrderId = null;
+
+        // Function to show payment modal
+        function showPaymentModal(orderId, totalAmount, orderNumber) {
+            currentOrderId = orderId;
+            
+            // Format total amount
+            const formattedTotal = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(totalAmount);
+            
+            // Update modal content
+            document.getElementById('payment-order-number').textContent = '#' + orderNumber;
+            document.getElementById('payment-total').textContent = formattedTotal;
+            
+            // Show modal
+            const modal = document.getElementById('payment-modal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Function to close payment modal
+        function closePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            currentOrderId = null;
+        }
+
+        // Function to process WhatsApp payment
+        function prosesPembayaranWA() {
+            if (!currentOrderId) {
+                alert('ID pesanan tidak valid');
+                return;
+            }
+            
+            // Show loading
+            const button = document.getElementById('btn-whatsapp');
+            const buttonText = document.getElementById('btn-whatsapp-text');
+            const originalText = buttonText.textContent;
+            const originalDisabled = button.disabled;
+            buttonText.textContent = 'Memproses...';
+            button.disabled = true;
+            button.classList.add('opacity-70');
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('action', 'konfirmasi_pembayaran_wa');
+            formData.append('order_id', currentOrderId);
+            
+            // Send request
+            fetch('pesanan.php', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Open WhatsApp in new tab
+                    window.open(data.whatsapp_url, '_blank');
+                    
+                    // Show success message
+                    alert('✅ Anda akan diarahkan ke WhatsApp. Kirim bukti transfer Anda di sana. Setelah admin mengkonfirmasi, status pesanan akan berubah.');
+                    closePaymentModal();
+                } else {
+                    alert('❌ Gagal memproses pembayaran: ' + (data.message || 'Tidak ada pesan error'));
+                    buttonText.textContent = originalText;
+                    button.disabled = originalDisabled;
+                    button.classList.remove('opacity-70');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('⚠️ Terjadi kesalahan jaringan atau server. Silakan coba lagi nanti.');
+                buttonText.textContent = originalText;
+                button.disabled = originalDisabled;
+                button.classList.remove('opacity-70');
+            });
+        }
+
+        // Function to copy payment info
+        function copyPaymentInfo() {
+            const paymentInfo = `Info Rekening Moods Strap:
+BCA: 1234 5678 9012
+Mandiri: 3456 7890 1234
+BRI: 5678 9012 3456
+a.n. Moods Strap
+
+Setelah transfer, kirim bukti ke WhatsApp: +62 812 3456 7890`;
+            
+            navigator.clipboard.writeText(paymentInfo)
+                .then(() => {
+                    alert('✅ Info rekening berhasil disalin ke clipboard!');
+                })
+                .catch(err => {
+                    console.error('Gagal menyalin: ', err);
+                    alert('❌ Gagal menyalin info rekening');
+                });
+        }
+
         // Function to cancel order
         function batalkanPesanan(orderId) {
-            if (confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
-                fetch('ajax/batalkan_pesanan.php', {
+            if (confirm('Apakah Anda yakin ingin membatalkan pesanan ini?\nPesanan yang dibatalkan tidak dapat dikembalikan.')) {
+                // Show loading
+                const button = document.getElementById('btn-batal-' + orderId);
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                button.disabled = true;
+                button.classList.add('btn-loading');
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('action', 'batalkan_pesanan');
+                formData.append('order_id', orderId);
+                
+                // Send request
+                fetch('pesanan.php', {
                     method: 'POST',
+                    body: formData,
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'order_id=' + orderId
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
-                        alert('Pesanan berhasil dibatalkan');
+                        alert('✅ Pesanan berhasil dibatalkan');
                         location.reload();
                     } else {
-                        alert('Gagal membatalkan pesanan: ' + data.message);
+                        alert('❌ Gagal membatalkan pesanan: ' + (data.message || 'Tidak ada pesan error'));
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        button.classList.remove('btn-loading');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Terjadi kesalahan saat membatalkan pesanan');
+                    alert('⚠️ Terjadi kesalahan saat membatalkan pesanan');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('btn-loading');
                 });
             }
         }
 
         // Function to confirm receipt
         function konfirmasiPenerimaan(orderId) {
-            if (confirm('Apakah Anda yakin pesanan sudah diterima?')) {
-                fetch('ajax/konfirmasi_penerimaan.php', {
+            if (confirm('Apakah Anda yakin pesanan sudah diterima?\nSetelah dikonfirmasi, pesanan akan berstatus selesai.')) {
+                // Show loading
+                const button = document.getElementById('btn-konfirmasi-' + orderId);
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                button.disabled = true;
+                button.classList.add('btn-loading');
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('action', 'konfirmasi_penerimaan');
+                formData.append('order_id', orderId);
+                
+                // Send request
+                fetch('pesanan.php', {
                     method: 'POST',
+                    body: formData,
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'order_id=' + orderId
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
-                        alert('Pesanan berhasil dikonfirmasi');
+                        alert('✅ Pesanan berhasil dikonfirmasi');
                         location.reload();
                     } else {
-                        alert('Gagal mengkonfirmasi pesanan: ' + data.message);
+                        alert('❌ Gagal mengkonfirmasi pesanan: ' + (data.message || 'Tidak ada pesan error'));
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        button.classList.remove('btn-loading');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Terjadi kesalahan saat mengkonfirmasi pesanan');
+                    alert('⚠️ Terjadi kesalahan saat mengkonfirmasi pesanan');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('btn-loading');
                 });
             }
         }
+
+        // Close modal when clicking outside
+        document.getElementById('payment-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePaymentModal();
+            }
+        });
     </script>
 </body>
 </html>

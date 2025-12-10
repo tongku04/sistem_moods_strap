@@ -183,8 +183,7 @@ function format_currency($number) {
                         <span class="hidden md:inline"><?php echo htmlspecialchars($_SESSION['user']['username']); ?></span>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                        <a href="profil.php" class="block px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-500 transition">
-                            <i class="fas fa-user-circle mr-2"></i>Profil Saya
+
                         </a>
                         <a href="pesanan.php" class="block px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-500 transition">
                             <i class="fas fa-shopping-bag mr-2"></i>Pesanan Saya

@@ -573,17 +573,22 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
                     <h3 class="text-xl font-bold mb-6 flex items-center">
-                        <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-gem text-white text-sm"></i>
+                        <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-12 h-12 rounded-full object cover" alt="Logo">
+                         <div class="flex items-center justify-center mr-3">
+                         </div>
+
+                        <div class="flex items-center">
+                        
                         </div>
                         Moods <span class="text-gray-300">Strap</span>
                     </h3>
-                    <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Anda.</p>
+                    <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Hp Anda.</p>
                     <div class="flex space-x-4">
                         <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
                             <i class="fab fa-instagram group-hover:text-white"></i>
                         </a>
-                        <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                        </a>
+                        <a href="https://wa.me/6282162961621" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
                             <i class="fab fa-whatsapp group-hover:text-white"></i>
                         </a>
                     </div>
