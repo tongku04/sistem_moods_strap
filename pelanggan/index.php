@@ -270,29 +270,29 @@ if ($user_logged_in && $user_role === 'pelanggan') {
             </div>
         </div>
         
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="mobile-menu fixed inset-y-0 left-0 w-64 bg-white/95 backdrop-blur-md shadow-lg z-50 md:hidden">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
-                <h2 class="text-xl font-bold pink-text">Moods <span class="text-gray-800">Strap</span></h2>
-                <button id="close-mobile-menu" class="p-2 text-gray-500 hover:text-pink-500">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <nav class="p-4">
-                <a href="index.php" class="block py-3 px-4 text-pink-500 bg-pink-50 rounded-lg font-semibold transition mb-2">
-                    <i class="fas fa-home mr-3"></i>Beranda
-                </a>
-                <a href="produk.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
-                    <i class="fas fa-box mr-3"></i>Produk
-                </a>
-                <a href="keranjang.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
-                    <i class="fas fa-shopping-cart mr-3"></i>Keranjang
-                </a>
-                <a href="pesanan.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition">
-                    <i class="fas fa-shopping-bag mr-3"></i>Pesanan
-                </a>
-            </nav>
-        </div>
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="mobile-menu fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 md:hidden">
+    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
+        <h2 class="text-xl font-bold pink-text">Moods <span class="text-gray-800">Strap</span></h2>
+        <button id="close-mobile-menu" class="p-2 text-gray-500 hover:text-pink-500">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <nav class="p-4 bg-white">
+        <a href="index.php" class="block py-3 px-4 text-pink-500 bg-pink-50 rounded-lg font-semibold transition mb-2">
+            <i class="fas fa-home mr-3"></i>Beranda
+        </a>
+        <a href="produk.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
+            <i class="fas fa-box mr-3"></i>Produk
+        </a>
+        <a href="tentang.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition mb-2">
+            <i class="fas fa-info-circle mr-3"></i>Tentang Kami
+        </a>
+        <a href="kontak.php" class="block py-3 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition">
+            <i class="fas fa-envelope mr-3"></i>Kontak
+        </a>
+    </nav>
+</div>
     </header>
 
     <!-- Hero Slider -->
