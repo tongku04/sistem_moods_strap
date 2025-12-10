@@ -231,14 +231,11 @@
                     <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2 " target="_blank" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition transform hover:scale-110">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="https://tiktok.com/@moodsstrap" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white hover:bg-black transition transform hover:scale-110">
-                        <i class="fab fa-tiktok"></i>
                     </a>
-                    <a href="https://wa.me/6281234567890" target="_blank" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition transform hover:scale-110">
+                    <a href="https://wa.me/6282162961621" target="_blank" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition transform hover:scale-110">
                         <i class="fab fa-whatsapp"></i>
                     </a>
-                    <a href="https://facebook.com/moodsstrap" target="_blank" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition transform hover:scale-110">
-                        <i class="fab fa-facebook-f"></i>
+            
                     </a>
                 </div>
             </div>
