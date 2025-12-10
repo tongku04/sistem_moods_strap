@@ -149,14 +149,13 @@
     </style>
 </head>
 <body class="bg-white">
-    <!-- Header -->
+   <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center">
                 <a href="index.php" class="text-2xl font-bold pink-text flex items-center">
                     <div class="flex items-center justify-center mr-2">
-                        <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-12 h-12 rounded-full object cover" alt="Logo">
-                        <i class="fas fa-gem text-white text-sm"></i>
+                        <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-11 h-11 rounded-full object cover" alt="Logo">
                     </div>
                     Moods <span class="text-gray-800">Strap</span>
                 </a>

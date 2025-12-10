@@ -187,13 +187,13 @@ if ($user_logged_in && $user_role === 'pelanggan') {
     </style>
 </head>
 <body class="bg-white">
-    <!-- Header -->
+   <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center">
                 <a href="index.php" class="text-2xl font-bold pink-text flex items-center">
                     <div class="flex items-center justify-center mr-2">
-                        <img src="../assets/images/logo.png" class="w-11 h-11 rounded-full object-cover" alt="Logo Moods Strap" onerror="this.src='https://via.placeholder.com/44x44/ff69b4/ffffff?text=MS'">
+                        <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-11 h-11 rounded-full object cover" alt="Logo">
                     </div>
                     Moods <span class="text-gray-800">Strap</span>
                 </a>
@@ -648,7 +648,7 @@ if ($user_logged_in && $user_role === 'pelanggan') {
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-xl">A</div>
                         <div class="ml-4">
-                            <h4 class="font-bold text-gray-800 text-lg">Amelia Putri</h4>
+                            <h4 class="font-bold text-gray-800 text-lg">Syeila</h4>
                             <div class="flex text-yellow-400">
                                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                             </div>
@@ -661,7 +661,7 @@ if ($user_logged_in && $user_role === 'pelanggan') {
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-xl">R</div>
                         <div class="ml-4">
-                            <h4 class="font-bold text-gray-800 text-lg">Rina Sari</h4>
+                            <h4 class="font-bold text-gray-800 text-lg">Rara</h4>
                             <div class="flex text-yellow-400">
                                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
                             </div>
@@ -674,7 +674,7 @@ if ($user_logged_in && $user_role === 'pelanggan') {
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-xl">D</div>
                         <div class="ml-4">
-                            <h4 class="font-bold text-gray-800 text-lg">Dewi Lestari</h4>
+                            <h4 class="font-bold text-gray-800 text-lg">Egi</h4>
                             <div class="flex text-yellow-400">
                                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                             </div>
@@ -709,30 +709,25 @@ if ($user_logged_in && $user_role === 'pelanggan') {
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
                     <h3 class="text-xl font-bold mb-6 flex items-center">
-                        <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-gem text-white text-sm"></i>
+                        <img src="WhatsApp_Image_2025-11-13_at_08.21.58_d2b62406-removebg-preview.png" class="w-12 h-12 rounded-full object cover" alt="Logo">
+                         <div class="flex items-center justify-center mr-3">
+                         </div>
+
+                        <div class="flex items-center">
+                        
                         </div>
                         Moods <span class="text-gray-300">Strap</span>
                     </h3>
-                    <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Anda.</p>
+                    <p class="text-gray-400 mb-6">Toko online gantungan aksesoris HP dengan desain unik dan berkualitas tinggi untuk melengkapi gaya Hp Anda.</p>
                     <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition">
-                            <i class="fab fa-instagram"></i>
+                        <a href="https://www.instagram.com/moods_strap?igsh=aXExOGozazVycmk2" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                            <i class="fab fa-instagram group-hover:text-white"></i>
                         </a>
-                        <a href="https://wa.me/6282162961621?text=Halo%20Moods%20Strap,%20saya%20mau%20tanya%20tentang%20produk%20kalian" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
+                        </a>
+                        <a href="https://wa.me/6282162961621" target="_blank" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:gradient-bg transition group">
                             <i class="fab fa-whatsapp group-hover:text-white"></i>
                         </a>
                     </div>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold text-lg mb-6">Tautan Cepat</h4>
-                    <ul class="space-y-3">
-                        <li><a href="index.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Beranda</a></li>
-                        <li><a href="produk.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Produk</a></li>
-                        <li><a href="keranjang.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Keranjang</a></li>
-                        <li><a href="pesanan.php" class="text-gray-400 hover:text-pink-400 transition flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i>Pesanan</a></li>
-                    </ul>
                 </div>
                 
                 <div>
