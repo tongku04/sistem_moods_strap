@@ -182,8 +182,38 @@ if (isset($_POST['action']) && $_POST['action'] == 'konfirmasi_pembayaran_wa' &&
     $nama_pelanggan = $pesanan['nama_lengkap'] ? $pesanan['nama_lengkap'] : $username;
     $no_telepon = $pesanan['telepon'] ? $pesanan['telepon'] : '-';
     
+    // UPDATE STATUS PEMBAYARAN DAN PESANAN DI DATABASE
+    $update_payment_query = "UPDATE penjualan 
+                            SET status_pembayaran = 'paid',
+                                status_pesanan = 'diproses'
+                            WHERE id_penjualan = ? 
+                            AND id_pelanggan = ?";
+    
+    $stmt_update = mysqli_prepare($koneksi, $update_payment_query);
+    mysqli_stmt_bind_param($stmt_update, "ii", $order_id, $id_pelanggan);
+    
+    if (!mysqli_stmt_execute($stmt_update)) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Gagal update status pembayaran: ' . mysqli_error($koneksi)
+        ]);
+        exit;
+    }
+    
+    // Tambahkan log aktivitas
+    $log_query = "INSERT INTO log_aktivitas (id_user, aktivitas, deskripsi, ip_address, user_agent) 
+                  VALUES (?, 'konfirmasi_pembayaran', ?, ?, ?)";
+    
+    $ip_address = $_SERVER['REMOTE_ADDR'];
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    $deskripsi = "Pelanggan mengirim bukti pembayaran untuk pesanan #" . $no_pesanan . " via WhatsApp";
+    
+    $stmt_log = mysqli_prepare($koneksi, $log_query);
+    mysqli_stmt_bind_param($stmt_log, "isss", $user_id, $deskripsi, $ip_address, $user_agent);
+    mysqli_stmt_execute($stmt_log);
+    
     // Buat pesan WhatsApp
-    $whatsapp_number = "082215254298"; // Ganti dengan nomor WhatsApp admin
+    $whatsapp_number = "+6282162961621"; // Ganti dengan nomor WhatsApp admin
     
     // Format pesan
     $message = "Halo Admin Moods Strap,%0A%0A";
@@ -194,16 +224,19 @@ if (isset($_POST['action']) && $_POST['action'] == 'konfirmasi_pembayaran_wa' &&
     $message .= "✉️ *Email:* " . ($pesanan['email'] ? $pesanan['email'] : '-') . "%0A";
     $message .= "💰 *Total Pembayaran:* Rp $total_harga%0A";
     $message .= "📅 *Tanggal Pesan:* " . date('d M Y H:i', strtotime($pesanan['tanggal'])) . "%0A%0A";
+    $message .= "*STATUS PEMBAYARAN:* ✅ *SUDAH DIBAYAR*%0A";
+    $message .= "*STATUS PESANAN:* ⏳ *DIPROSES*%0A%0A";
     $message .= "Bukti pembayaran akan saya kirim di chat ini.%0A%0A";
-    $message .= "Mohon konfirmasi setelah menerima pembayaran. Terima kasih!%0A%0A";
+    $message .= "Mohon konfirmasi dan proses pesanan ini. Terima kasih!%0A%0A";
     $message .= "_Pesan ini dikirim otomatis dari sistem Moods Strap_";
     
-    $whatsapp_url = "https://wa.me/$whatsapp_number?text=" . $message;
+    $whatsapp_url = "https://wa.me/+6282162961621?text=" . $message;
     
     echo json_encode([
         'success' => true, 
-        'message' => 'Arahkan ke WhatsApp untuk mengirim bukti pembayaran',
-        'whatsapp_url' => $whatsapp_url
+        'message' => 'Status pembayaran berhasil diperbarui. Arahkan ke WhatsApp untuk mengirim bukti pembayaran',
+        'whatsapp_url' => $whatsapp_url,
+        'order_number' => $no_pesanan
     ]);
     exit;
 }
@@ -790,19 +823,15 @@ if (!empty($detail['foto'])) {
                                 <div>
                                     <p class="font-medium text-gray-800">Transfer ke salah satu rekening berikut:</p>
                                     <div class="mt-2 space-y-2 bg-pink-50 p-3 rounded-lg">
+                                        
                                         <div class="flex justify-between">
-                                            <span class="text-gray-600">Bank BCA:</span>
-                                            <span class="font-mono font-bold">1234 5678 9012</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Bank Mandiri:</span>
-                                            <span class="font-mono font-bold">3456 7890 1234</span>
+                                            <span class="text-gray-600">Dana:</span>
+                                            <span class="font-mono font-bold">0851-6906-5166</span>
                                         </div>
                                         <div class="flex justify-between">
                                             <span class="text-gray-600">Bank BRI:</span>
-                                            <span class="font-mono font-bold">5678 9012 3456</span>
+                                            <span class="font-mono font-bold">3539 0104 1085 536</span>
                                         </div>
-                                        <p class="text-sm text-gray-600 mt-2">a.n. <strong>Moods Strap</strong></p>
                                     </div>
                                 </div>
                             </div>

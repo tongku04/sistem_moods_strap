@@ -432,9 +432,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <h4 class="font-semibold text-blue-800 mb-2">Transfer Bank</h4>
                                 <p class="text-blue-700 text-sm mb-3">Silakan transfer ke rekening berikut:</p>
                                 <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-blue-600">Bank BCA</span>
-                                        <span class="font-mono font-bold text-blue-800">123 456 7890</span>
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-blue-600">Bank Mandiri</span>
@@ -442,7 +439,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-blue-600">Bank BRI</span>
-                                        <span class="font-mono font-bold text-blue-800">456 789 0123</span>
+                                        <span class="font-mono font-bold text-blue-800">3539 0104 1085 536</span>
                                     </div>
                                 </div>
                                 <p class="text-blue-700 text-sm mt-3"><strong>Atas Nama:</strong> Moods Strap</p>
@@ -514,44 +511,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             </div>
 
-                            <!-- Proof of Payment Upload -->
-                            <div class="mb-8">
-                                <h3 class="font-semibold text-gray-700 mb-4">Upload Bukti Pembayaran</h3>
-                                
-                                <div class="file-upload rounded-xl p-8 text-center" id="file-upload-area">
-                                    <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" class="hidden" accept="image/*,.pdf">
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                            <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl"></i>
-                                        </div>
-                                        <p class="text-gray-600 mb-2">Klik untuk mengunggah bukti pembayaran</p>
-                                        <p class="text-sm text-gray-500">Format: JPG, PNG, GIF, PDF (Max 2MB)</p>
-                                        <button type="button" onclick="document.getElementById('bukti_pembayaran').click()" 
-                                                class="mt-4 px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition font-medium">
-                                            Pilih File
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div id="file-preview" class="hidden mt-4">
-                                    <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
-                                        <div class="flex items-center space-x-3">
-                                            <i class="fas fa-file text-gray-400 text-lg"></i>
-                                            <div>
-                                                <p id="file-name" class="font-medium text-gray-700"></p>
-                                                <p id="file-size" class="text-sm text-gray-500"></p>
-                                            </div>
-                                        </div>
-                                        <button type="button" onclick="removeFile()" class="text-red-500 hover:text-red-700">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-2 text-sm text-red-500 hidden" id="file-error">
-                                    Silakan upload bukti pembayaran
-                                </div>
-                            </div>
+
 
                             <!-- Order Total -->
                             <div class="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-6 mb-6">
