@@ -20,6 +20,9 @@ ini_set('display_errors', 1);
 $pesan = '';
 $pesan_error = '';
 
+// Inisialisasi variabel untuk form
+$nama_produk = $harga = $deskripsi = $stok = $id_kategori = $status = '';
+
 // Proses form tambah produk
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nama_produk = mysqli_real_escape_string($koneksi, $_POST['nama_produk']);
@@ -31,33 +34,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Handle upload foto
     $foto = null;
-    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        $ekstensi_diperbolehkan = array('jpg', 'jpeg', 'png', 'gif');
-        $nama_file = $_FILES['foto']['name'];
-        $ekstensi = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
-        $ukuran_file = $_FILES['foto']['size'];
-        $file_tmp = $_FILES['foto']['tmp_name'];
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] != 4) { // Error 4 = No file uploaded
+        if ($_FILES['foto']['error'] == 0) {
+            $ekstensi_diperbolehkan = array('jpg', 'jpeg', 'png', 'gif');
+            $nama_file = $_FILES['foto']['name'];
+            $ekstensi = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
+            $ukuran_file = $_FILES['foto']['size'];
+            $file_tmp = $_FILES['foto']['tmp_name'];
 
-        if (in_array($ekstensi, $ekstensi_diperbolehkan)) {
-            if ($ukuran_file < 5000000) { // 5MB max
-                $nama_file_baru = uniqid() . '.' . $ekstensi;
-                $tujuan_upload = '../uploads/produk/' . $nama_file_baru;
-                
-                // Buat folder uploads jika belum ada
-                if (!is_dir('../uploads/produk')) {
-                    mkdir('../uploads/produk', 0777, true);
-                }
-                
-                if (move_uploaded_file($file_tmp, $tujuan_upload)) {
-                    $foto = $nama_file_baru;
+            // Cek ekstensi file
+            if (in_array($ekstensi, $ekstensi_diperbolehkan)) {
+                // Cek ukuran file
+                if ($ukuran_file < 5000000) { // 5MB max
+                    // Generate nama file unik
+                    $nama_file_baru = uniqid('produk_', true) . '.' . $ekstensi;
+                    $tujuan_upload = '../uploads/produk/' . $nama_file_baru;
+                    
+                    // Buat folder uploads jika belum ada
+                    if (!is_dir('../uploads/produk')) {
+                        mkdir('../uploads/produk', 0777, true);
+                    }
+                    
+                    // Pindahkan file ke folder uploads
+                    if (move_uploaded_file($file_tmp, $tujuan_upload)) {
+                        $foto = $nama_file_baru;
+                    } else {
+                        $pesan_error = "Gagal mengupload foto produk. Pastikan folder uploads memiliki izin tulis.";
+                    }
                 } else {
-                    $pesan_error = "Gagal mengupload foto produk.";
+                    $pesan_error = "Ukuran file terlalu besar. Maksimal 5MB.";
                 }
             } else {
-                $pesan_error = "Ukuran file terlalu besar. Maksimal 5MB.";
+                $pesan_error = "Ekstensi file tidak diperbolehkan. Hanya JPG, JPEG, PNG, dan GIF.";
             }
         } else {
-            $pesan_error = "Ekstensi file tidak diperbolehkan. Hanya JPG, JPEG, PNG, dan GIF.";
+            // Handle error upload
+            switch ($_FILES['foto']['error']) {
+                case 1:
+                    $pesan_error = "Ukuran file melebihi batas server.";
+                    break;
+                case 2:
+                    $pesan_error = "Ukuran file melebihi batas form.";
+                    break;
+                case 3:
+                    $pesan_error = "File hanya terupload sebagian.";
+                    break;
+                case 6:
+                    $pesan_error = "Folder temporary tidak ditemukan.";
+                    break;
+                case 7:
+                    $pesan_error = "Gagal menulis file ke disk.";
+                    break;
+                case 8:
+                    $pesan_error = "Upload dihentikan oleh ekstensi PHP.";
+                    break;
+                default:
+                    $pesan_error = "Terjadi kesalahan saat upload file.";
+            }
         }
     }
 
@@ -65,23 +98,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($nama_produk) || empty($harga) || empty($stok)) {
         $pesan_error = "Nama produk, harga, dan stok harus diisi!";
     } else {
+        // Jika foto tidak diupload, set null
+        if ($foto === null) {
+            $foto = ''; // Atau bisa juga diisi dengan default image
+        }
+        
         // Insert data ke database
         $query = "INSERT INTO produk (nama_produk, harga, deskripsi, stok, id_kategori, foto, status) 
                   VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = mysqli_prepare($koneksi, $query);
-        mysqli_stmt_bind_param($stmt, 'sisisss', $nama_produk, $harga, $deskripsi, $stok, $id_kategori, $foto, $status);
-        
-        if (mysqli_stmt_execute($stmt)) {
-            $pesan = "Produk berhasil ditambahkan!";
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, 'sisisss', $nama_produk, $harga, $deskripsi, $stok, $id_kategori, $foto, $status);
             
-            // Reset form values
-            $nama_produk = $harga = $deskripsi = $stok = '';
-            $id_kategori = $status = '';
+            if (mysqli_stmt_execute($stmt)) {
+                $pesan = "Produk berhasil ditambahkan!";
+                
+                // Reset form values hanya jika berhasil
+                $nama_produk = $harga = $deskripsi = $stok = $id_kategori = '';
+                $status = 'active';
+            } else {
+                $pesan_error = "Gagal menambahkan produk: " . mysqli_error($koneksi);
+            }
+            mysqli_stmt_close($stmt);
         } else {
-            $pesan_error = "Gagal menambahkan produk: " . mysqli_error($koneksi);
+            $pesan_error = "Gagal menyiapkan query: " . mysqli_error($koneksi);
         }
-        mysqli_stmt_close($stmt);
     }
 }
 
@@ -93,6 +135,8 @@ if ($result_kategori) {
     while ($row = mysqli_fetch_assoc($result_kategori)) {
         $kategori[] = $row;
     }
+} else {
+    $pesan_error .= " Gagal mengambil data kategori: " . mysqli_error($koneksi);
 }
 ?>
 
@@ -317,7 +361,7 @@ if ($result_kategori) {
                                     Nama Produk <span class="text-red-400">*</span>
                                 </label>
                                 <input type="text" id="nama_produk" name="nama_produk" required
-                                    value="<?php echo isset($_POST['nama_produk']) ? htmlspecialchars($_POST['nama_produk']) : ''; ?>"
+                                    value="<?php echo htmlspecialchars($nama_produk); ?>"
                                     class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-primary-500"
                                     placeholder="Masukkan nama produk">
                             </div>
@@ -330,8 +374,8 @@ if ($result_kategori) {
                                 </label>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">Rp</span>
-                                    <input type="number" id="harga" name="harga" required min="0"
-                                        value="<?php echo isset($_POST['harga']) ? htmlspecialchars($_POST['harga']) : ''; ?>"
+                                    <input type="number" id="harga" name="harga" required min="0" step="100"
+                                        value="<?php echo htmlspecialchars($harga); ?>"
                                         class="form-input w-full pl-10 pr-4 py-3 rounded-lg focus:ring-2 focus:ring-primary-500"
                                         placeholder="0">
                                 </div>
@@ -344,7 +388,7 @@ if ($result_kategori) {
                                     Stok <span class="text-red-400">*</span>
                                 </label>
                                 <input type="number" id="stok" name="stok" required min="0"
-                                    value="<?php echo isset($_POST['stok']) ? htmlspecialchars($_POST['stok']) : '0'; ?>"
+                                    value="<?php echo htmlspecialchars($stok); ?>"
                                     class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-primary-500"
                                     placeholder="0">
                             </div>
@@ -361,7 +405,7 @@ if ($result_kategori) {
                                     <?php foreach ($kategori as $kat): ?>
                                         <option value="<?php echo $kat['id_kategori']; ?>" 
                                             class="bg-dark-800"
-                                            <?php echo (isset($_POST['id_kategori']) && $_POST['id_kategori'] == $kat['id_kategori']) ? 'selected' : ''; ?>>
+                                            <?php echo ($id_kategori == $kat['id_kategori']) ? 'selected' : ''; ?>>
                                             <?php echo htmlspecialchars($kat['nama_kategori']); ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -377,9 +421,9 @@ if ($result_kategori) {
                                 <select id="status" name="status"
                                     class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-primary-500">
                                     <option value="active" class="bg-dark-800" 
-                                        <?php echo (isset($_POST['status']) && $_POST['status'] == 'active') ? 'selected' : 'selected'; ?>>Active</option>
+                                        <?php echo ($status == 'active' || $status == '') ? 'selected' : ''; ?>>Active</option>
                                     <option value="inactive" class="bg-dark-800"
-                                        <?php echo (isset($_POST['status']) && $_POST['status'] == 'inactive') ? 'selected' : ''; ?>>Inactive</option>
+                                        <?php echo ($status == 'inactive') ? 'selected' : ''; ?>>Inactive</option>
                                 </select>
                             </div>
                         </div>
@@ -392,14 +436,14 @@ if ($result_kategori) {
                             </label>
                             <textarea id="deskripsi" name="deskripsi" rows="4"
                                 class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-primary-500 resize-none"
-                                placeholder="Masukkan deskripsi produk..."><?php echo isset($_POST['deskripsi']) ? htmlspecialchars($_POST['deskripsi']) : ''; ?></textarea>
+                                placeholder="Masukkan deskripsi produk..."><?php echo htmlspecialchars($deskripsi); ?></textarea>
                         </div>
 
                         <!-- Foto Produk -->
                         <div class="mb-8">
-                            <label class="form-label block text-sm font-medium mb-3">
+                            <label for="foto" class="form-label block text-sm font-medium mb-3">
                                 <i class="fas fa-camera mr-2 text-primary-400"></i>
-                                Foto Produk
+                                Foto Produk (Opsional)
                             </label>
                             <div class="file-upload-area rounded-lg p-6 text-center cursor-pointer"
                                 id="uploadArea"
@@ -421,7 +465,7 @@ if ($result_kategori) {
 
                         <!-- Tombol Action -->
                         <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
-                            <button type="reset" class="glass px-8 py-3 rounded-lg text-gray-300 hover:bg-white/10 transition-all duration-300 border border-gray-700">
+                            <button type="reset" onclick="resetForm()" class="glass px-8 py-3 rounded-lg text-gray-300 hover:bg-white/10 transition-all duration-300 border border-gray-700">
                                 <i class="fas fa-redo mr-2"></i>Reset Form
                             </button>
                             <button type="submit" class="bg-gradient-to-r from-primary-500 to-primary-600 px-8 py-3 rounded-lg text-white font-semibold hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-lg">
@@ -512,6 +556,21 @@ if ($result_kategori) {
             const imagePreview = document.getElementById('imagePreview');
             
             if (input.files && input.files[0]) {
+                // Validasi ukuran file (5MB)
+                if (input.files[0].size > 5 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar! Maksimal 5MB.');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validasi ekstensi file
+                const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                if (!allowedExtensions.exec(input.files[0].name)) {
+                    alert('Format file tidak didukung! Hanya JPG, JPEG, PNG, dan GIF.');
+                    input.value = '';
+                    return;
+                }
+                
                 const reader = new FileReader();
                 
                 reader.onload = function(e) {
@@ -550,21 +609,48 @@ if ($result_kategori) {
             if (!namaProduk) {
                 alert('Nama produk harus diisi!');
                 e.preventDefault();
-                return;
+                return false;
             }
             
             if (!harga || harga < 0) {
                 alert('Harga harus diisi dengan angka yang valid!');
                 e.preventDefault();
-                return;
+                return false;
             }
             
             if (!stok || stok < 0) {
                 alert('Stok harus diisi dengan angka yang valid!');
                 e.preventDefault();
-                return;
+                return false;
             }
+            
+            // Validasi file jika ada
+            const fileInput = document.getElementById('foto');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                
+                if (!allowedExtensions.exec(file.name)) {
+                    alert('Format file tidak didukung! Hanya JPG, JPEG, PNG, dan GIF.');
+                    e.preventDefault();
+                    return false;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar! Maksimal 5MB.');
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            
+            return true;
         });
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('formTambahProduk').reset();
+            removeImage();
+        }
     </script>
 </body>
 </html>
